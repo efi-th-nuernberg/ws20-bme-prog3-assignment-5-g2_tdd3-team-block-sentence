@@ -51,13 +51,14 @@ public class LifeTest {
       Life l = new Life(5,5);
 
       l.setAlive(1,1);
+      l.setAlive(2,2);
       l.setAlive(1,2);
       l.setAlive(1,3);
       l.setAlive(0,2);
 
       ILife nextGen = l.nextGeneration();
 
-      assertFalse("err3", nextGen.isAlive(1,2));
+      assertFalse("err3", nextGen.isAlive(1,3));
     }
 
 

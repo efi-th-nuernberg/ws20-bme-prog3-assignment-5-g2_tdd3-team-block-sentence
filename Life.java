@@ -22,7 +22,7 @@ public Life( int dim_y, int dim_x ) {
         this( setup[ 0 ].length(), setup.length );
         for( int y = 0; y < dim_y; y++ ) {
             for( int x = 0; x < dim_x; x++ ) {
-                if( setup[ y ].charAt( x ) != '*' ) {
+                if( setup[ y ].charAt( x ) == '*' ) {
                     setAlive( y, x );
                 }
             }
@@ -34,9 +34,9 @@ public Life( int dim_y, int dim_x ) {
     // setDead(all)
      for( int y = 0; y < dim_y; y++ ) {
             for( int x = 0; x < dim_x; x++ ) {
-                    setDead( y, x );
+                    setDead( x, y );
             }
-        }
+      }
   }
 
   @Override
@@ -51,7 +51,7 @@ public Life( int dim_y, int dim_x ) {
 
   @Override
   public boolean isAlive(int x, int y) {
-    if(cells[y][x] == CellValue.ALIVE) return true;
+    if (cells[y][x] == CellValue.ALIVE) return true;
     return false;
   }
 
@@ -61,88 +61,45 @@ public Life( int dim_y, int dim_x ) {
     int[][] nextGArray= new int[ dim_y ][ dim_x ];
 
     for( int y = 0; y < dim_y; y++ ) {
-            for( int x = 0; x < dim_x; x++ ) {
-              int nbrOfNeighbours = countNeighboursOfCell(x,y);
-              nextGArray[y][x] = nbrOfNeighbours;
-            }
+        for( int x = 0; x < dim_x; x++ ) {
+          int nbrOfNeighbours = countNeighboursOfCell(x,y);
+          nextGArray[y][x] = nbrOfNeighbours;
+        }    
     }
 
-     for( int y = 0; y < dim_y; y++ ) {
-            for( int x = 0; x < dim_x; x++ ) {
-             //Neue Zelle
-              if( nextGArray[y][x] == 3){
-                  if(!isAlive(x,y)){
-                    setAlive(x, y);
-                  }
-
-              // Regeln für lebende Zellen
-              }else{
-                if(nextGArray[y][x] < 2 || nextGArray[y][x] > 3) {
-                  setDead(x,y);
-                  }
-              } 
-            }
+    String [] nextGen = new String[dim_y];
+    for( int y = 0; y < dim_y; y++ ) {
+      String t = "";
+      for( int x = 0; x < dim_x; x++ ) {
+        if( nextGArray[y][x] == 3 || nextGArray[y][x] == 2){ 
+          t+="*";
+          setAlive(x,y);
         }
-    
-    return null;
-  }
+        else if(nextGArray[y][x] < 2 || nextGArray[y][x] > 3) {
+          t+= " ";
+          setDead(x,y);
+        }
+      }
+      
+      nextGen[y] = t;
+    }
 
+    return new Life(nextGen);
+  }
 
 
   
   public int countNeighboursOfCell(int x , int y){
     int counter = 0;
-
-    int x_begin = x - 1;
-    int y_begin = y - 1;
-    int x_end = x + 1;
-    int y_end = y + 1;
-
-    if(x_begin < 0) x_begin = 0;
-    if(y_begin < 0) y_begin = 0;
-    if(x_end > dim_x) x_end = dim_x;
-    if(y_end > dim_y) y_end = dim_y;
-
     
-    for(int y_cell = y_begin; y_cell <= y_end; y++ ) {
-            for( int x_cell = x_begin; x_cell <= x_end; x++ ) {
-            if(cells[x_cell][y_cell] != cells[x][y]){
-             if(cells[x_cell][y_cell] == CellValue.ALIVE) counter++;
-               } 
-            }
-      }
-
-
-//       int column = x; 
-//       int row = y;
-//       int row_end;
-//       int column_end;
-
-//       // Warum -3? dim_y ist doch eigentlich auch das row_end
-//       if(y>=dim_y-3){
-//         row_end=dim_y;
-//       }else{
-//         row_end=y+3;
-//       }
-
-//       if(x>=dim_x-3){
-//         column_end=dim_x;
-//       }else{
-//         column_end=x+3;
-//       }
-      
-// System.out.println("row "+row+ " - " +row_end+" column "+column+" - "+ column_end);
-
-//      for( ; row < row_end; row++ ) {
-//        for( ; column < column_end; column++ ) {
-
-//           //  if(column==x && row==y){
-//           //    continue;
-//           //  }
-           
-//           //  if(isAlive(column, row)){  
-//                 System.out.println(row + "  " + column + "  "+counter++);      
-//           }counter++;}
+    if((x-1) >=0 && (y-1) >=0 && isAlive(x-1,y-1)) counter++;
+    if((y-1) >=0 && isAlive(x,y-1)) counter++;
+    if((x+1) < dim_x && (y-1) >=0 && isAlive(x+1,y-1)) counter++;
+    if((x-1) >=0&& isAlive(x-1,y)) counter++;
+    if((x+1) < dim_x && isAlive(x+1,y)) counter++;
+    if((x-1) >=0 && (y+1) < dim_y && isAlive(x-1,y+1)) counter++;
+    if((y+1) <dim_y && isAlive(x,y+1)) counter++;
+    if((x+1) <dim_x && (y+1) <dim_y && isAlive(x+1,y+1)) counter++;
 
     return counter;
   }
