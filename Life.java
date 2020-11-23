@@ -98,7 +98,9 @@ public Life( int dim_y, int dim_x ) {
     if((x-1) >=0&& isAlive(x-1,y)) counter++;
     if((x+1) < dim_x && isAlive(x+1,y)) counter++;
     if((x-1) >=0 && (y+1) < dim_y && isAlive(x-1,y+1)) counter++;
+
     if((y+1) <dim_y && isAlive(x,y+1)) counter++;
+
     if((x+1) <dim_x && (y+1) <dim_y && isAlive(x+1,y+1)) counter++;
 
     return counter;
